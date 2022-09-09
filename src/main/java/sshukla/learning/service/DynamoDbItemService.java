@@ -1,6 +1,6 @@
 package sshukla.learning.service;
 
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 import software.amazon.awssdk.services.dynamodb.model.AttributeValue;
 import software.amazon.awssdk.services.dynamodb.model.DynamoDbException;
@@ -13,7 +13,7 @@ import java.util.Set;
 /**
  * @author 'Seemant Shukla' on '08/09/2022'
  */
-@Service
+@Component
 public class DynamoDbItemService {
 
     public void scanItems(DynamoDbClient ddb, String tableName) {

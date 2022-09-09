@@ -1,6 +1,6 @@
 package sshukla.learning.service;
 
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 import software.amazon.awssdk.services.dynamodb.model.*;
 import software.amazon.awssdk.services.dynamodb.waiters.DynamoDbWaiter;
@@ -10,10 +10,11 @@ import java.util.List;
 /**
  * @author 'Seemant Shukla' on '08/09/2022'
  */
-@Service
+
+@Component
 public class DynamoDbTableService {
 
-    public String createTable(DynamoDbClient ddb, String tableName, String partitionKey) {
+    public String createDDTable(DynamoDbClient ddb, String tableName, String partitionKey) {
 
         CreateTableRequest request = CreateTableRequest.builder()
                 .attributeDefinitions(AttributeDefinition.builder()
@@ -31,16 +32,10 @@ public class DynamoDbTableService {
                 .tableName(tableName)
                 .build();
 
-        try {
-            CreateTableResponse response = ddb.createTable(request);
-            tableCreateWait(ddb, tableName);
-            return response.tableDescription().tableName();
-        } catch (DynamoDbException e) {
-            throw new RuntimeException(e.getMessage());
-        }
+        return createTable(ddb, tableName, request);
     }
 
-    public String compositeKeyCreateTable(DynamoDbClient ddb, String tableName, String partitionKey, String sortKey) {
+    public String compositeKeyCreateDDTable(DynamoDbClient ddb, String tableName, String partitionKey, String sortKey) {
         CreateTableRequest request = CreateTableRequest.builder()
                 .attributeDefinitions(AttributeDefinition.builder()
                                 .attributeName(partitionKey)
@@ -64,12 +59,16 @@ public class DynamoDbTableService {
                 .tableName(tableName)
                 .build();
 
+        return createTable(ddb, tableName, request);
+    }
+
+    private String createTable(DynamoDbClient ddb, String tableName, CreateTableRequest request) {
         try {
             CreateTableResponse result = ddb.createTable(request);
             tableCreateWait(ddb, tableName);
             return result.tableDescription().tableName();
         } catch (DynamoDbException e) {
-            throw new RuntimeException(e.getMessage());
+            throw new RuntimeException("Exception occurred while creating table : " + e.getMessage());
         }
     }
 
@@ -105,7 +104,7 @@ public class DynamoDbTableService {
                 }
 
             } catch (DynamoDbException e) {
-                throw new RuntimeException(e.getMessage());
+                throw new RuntimeException("Exception occurred while fetching list of tables : " +e.getMessage());
             }
         }
         System.out.println("\nDone!");
