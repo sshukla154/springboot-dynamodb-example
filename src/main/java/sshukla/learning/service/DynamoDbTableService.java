@@ -104,25 +104,20 @@ public class DynamoDbTableService {
                 }
 
             } catch (DynamoDbException e) {
-                throw new RuntimeException("Exception occurred while fetching list of tables : " +e.getMessage());
+                throw new RuntimeException("Exception occurred while fetching list of tables : " + e.getMessage());
             }
         }
-        System.out.println("\nDone!");
     }
 
     public void deleteDynamoDBTable(DynamoDbClient ddb, String tableName) {
-
         DeleteTableRequest request = DeleteTableRequest.builder()
                 .tableName(tableName)
                 .build();
-
         try {
             ddb.deleteTable(request);
-
         } catch (DynamoDbException e) {
-            throw new RuntimeException(e.getMessage());
+            throw new RuntimeException("Exception occurred while deleting table " + tableName + " : " + e.getMessage());
         }
-        System.out.println(tableName + " was successfully deleted!");
     }
 
     private void tableCreateWait(DynamoDbClient ddb, String tableName) {

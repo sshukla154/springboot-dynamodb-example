@@ -60,7 +60,7 @@ public class Movie {
         this.title = title;
     }
 
-    @DynamoDbSecondaryPartitionKey(indexNames = { "year-index" })
+    @DynamoDbSecondaryPartitionKey(indexNames = {"year-index"})
     public String getReleaseYear() {
         return releaseYear;
     }
