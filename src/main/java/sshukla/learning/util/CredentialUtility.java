@@ -9,8 +9,8 @@ import software.amazon.awssdk.auth.credentials.AwsCredentialsProvider;
 public class CredentialUtility {
 
     //TODO: UPDATE THE BELOW VARIABLES VALUE WITH CORRECT AWS CREDENTAILS
-    public static final String AWS_ACCESS_KEY = "AKIA4QGDHDEODRPXADWT";
-    public static final String AWS_SECRET_KEY = "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";
+    public static final String AWS_ACCESS_KEY = "";
+    public static final String AWS_SECRET_KEY = "";
 
     public static AwsCredentialsProvider getCredentails(){
         AwsCredentialsProvider awsCredentialsProvider = () -> new AwsCredentials() {
