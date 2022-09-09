@@ -1,7 +1,6 @@
 package sshukla.learning.service;
 
 import org.springframework.stereotype.Service;
-import software.amazon.awssdk.core.waiters.WaiterResponse;
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 import software.amazon.awssdk.services.dynamodb.model.*;
 import software.amazon.awssdk.services.dynamodb.waiters.DynamoDbWaiter;
@@ -14,42 +13,31 @@ import java.util.List;
 @Service
 public class DynamoDbTableService {
 
-    public String createTable(DynamoDbClient ddb, String tableName, String key) {
-        DynamoDbWaiter dbWaiter = ddb.waiter();
+    public String createTable(DynamoDbClient ddb, String tableName, String partitionKey) {
+
         CreateTableRequest request = CreateTableRequest.builder()
                 .attributeDefinitions(AttributeDefinition.builder()
-                        .attributeName(key)
+                        .attributeName(partitionKey)
                         .attributeType(ScalarAttributeType.S)
                         .build())
                 .keySchema(KeySchemaElement.builder()
-                        .attributeName(key)
+                        .attributeName(partitionKey)
                         .keyType(KeyType.HASH)
                         .build())
                 .provisionedThroughput(ProvisionedThroughput.builder()
-                        .readCapacityUnits(5L)
-                        .writeCapacityUnits(5L)
+                        .readCapacityUnits(2L)
+                        .writeCapacityUnits(2L)
                         .build())
                 .tableName(tableName)
                 .build();
 
-        String newTable = "";
         try {
             CreateTableResponse response = ddb.createTable(request);
-            DescribeTableRequest tableRequest = DescribeTableRequest.builder()
-                    .tableName(tableName)
-                    .build();
-
-            // Wait until the Amazon DynamoDB table is created.
-            WaiterResponse<DescribeTableResponse> waiterResponse = dbWaiter.waitUntilTableExists(tableRequest);
-            waiterResponse.matched().response().ifPresent(System.out::println);
-            newTable = response.tableDescription().tableName();
-            return newTable;
-
+            tableCreateWait(ddb, tableName);
+            return response.tableDescription().tableName();
         } catch (DynamoDbException e) {
-            System.err.println(e.getMessage());
-            System.exit(1);
+            throw new RuntimeException(e.getMessage());
         }
-        return "";
     }
 
     public String compositeKeyCreateTable(DynamoDbClient ddb, String tableName, String partitionKey, String sortKey) {
@@ -71,21 +59,18 @@ public class DynamoDbTableService {
                                 .keyType(KeyType.RANGE)
                                 .build())
                 .provisionedThroughput(ProvisionedThroughput.builder()
-                        .readCapacityUnits(5L)
-                        .writeCapacityUnits(5L).build())
+                        .readCapacityUnits(2L)
+                        .writeCapacityUnits(2L).build())
                 .tableName(tableName)
                 .build();
 
-        String tableId = "";
         try {
             CreateTableResponse result = ddb.createTable(request);
-            tableId = result.tableDescription().tableId();
-            return tableId;
+            tableCreateWait(ddb, tableName);
+            return result.tableDescription().tableName();
         } catch (DynamoDbException e) {
-            System.err.println(e.getMessage());
-            System.exit(1);
+            throw new RuntimeException(e.getMessage());
         }
-        return "";
     }
 
     public void listAllTables(DynamoDbClient ddb) {
@@ -112,7 +97,6 @@ public class DynamoDbTableService {
                     }
                 } else {
                     System.out.println("No tables found!");
-                    System.exit(0);
                 }
 
                 lastName = response.lastEvaluatedTableName();
@@ -121,8 +105,7 @@ public class DynamoDbTableService {
                 }
 
             } catch (DynamoDbException e) {
-                System.err.println(e.getMessage());
-                System.exit(1);
+                throw new RuntimeException(e.getMessage());
             }
         }
         System.out.println("\nDone!");
@@ -138,10 +121,17 @@ public class DynamoDbTableService {
             ddb.deleteTable(request);
 
         } catch (DynamoDbException e) {
-            System.err.println(e.getMessage());
-            System.exit(1);
+            throw new RuntimeException(e.getMessage());
         }
         System.out.println(tableName + " was successfully deleted!");
+    }
+
+    private void tableCreateWait(DynamoDbClient ddb, String tableName) {
+        // Wait until the Amazon DynamoDB table is created.
+        DynamoDbWaiter dbWaiter = ddb.waiter();
+        dbWaiter.waitUntilTableExists(DescribeTableRequest.builder()
+                .tableName(tableName)
+                .build());
     }
 
 }

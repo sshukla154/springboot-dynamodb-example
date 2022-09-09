@@ -69,10 +69,8 @@ public class CompositeKeyCreateTable {
             tableId = result.tableDescription().tableId();
             return tableId;
         } catch (DynamoDbException e) {
-            System.err.println(e.getMessage());
-            System.exit(1);
+            throw new RuntimeException(e.getMessage());
         }
-        return "";
     }
     // snippet-end:[dynamodb.java2.create_table_composite_key.main]
 }

@@ -34,7 +34,6 @@ public class DynamoDbItemService {
 
         } catch (DynamoDbException e) {
             e.printStackTrace();
-            System.exit(1);
         }
     }
 
