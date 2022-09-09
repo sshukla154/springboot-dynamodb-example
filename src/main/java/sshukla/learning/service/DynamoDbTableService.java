@@ -128,4 +128,20 @@ public class DynamoDbTableService {
         System.out.println("\nDone!");
     }
 
+    public void deleteDynamoDBTable(DynamoDbClient ddb, String tableName) {
+
+        DeleteTableRequest request = DeleteTableRequest.builder()
+                .tableName(tableName)
+                .build();
+
+        try {
+            ddb.deleteTable(request);
+
+        } catch (DynamoDbException e) {
+            System.err.println(e.getMessage());
+            System.exit(1);
+        }
+        System.out.println(tableName + " was successfully deleted!");
+    }
+
 }
