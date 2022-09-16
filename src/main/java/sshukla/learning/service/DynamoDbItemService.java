@@ -1,5 +1,6 @@
 package sshukla.learning.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 import software.amazon.awssdk.services.dynamodb.model.*;
@@ -13,6 +14,7 @@ import java.util.Set;
  * @author 'Seemant Shukla' on '08/09/2022'
  */
 @Component
+@Slf4j
 public class DynamoDbItemService {
 
     public Movie createMovie(DynamoDbClient ddb, String tableName, Movie movie) {
@@ -35,9 +37,9 @@ public class DynamoDbItemService {
 
         try {
             PutItemResponse putItemResponse = ddb.putItem(PutItemRequest.builder().tableName(tableName).item(itemMap).build());
-            System.out.println(tableName + " was successfully created. The request id is " + putItemResponse.responseMetadata().requestId());
+            log.info("{} was successfully created. The request id is {}" + tableName + putItemResponse.responseMetadata().requestId());
         } catch (ResourceNotFoundException e) {
-            System.err.format("Error: The Amazon DynamoDB table \"%s\" can't be found.\n", tableName);
+            log.error("Error: The Amazon DynamoDB table \" " + tableName + " can't be found.\n");
             throw new RuntimeException("Be sure that it exists and that you've typed its name correctly!");
         } catch (DynamoDbException e) {
             throw new RuntimeException("Exception occurred while saving movie : " + e.getMessage());
@@ -62,8 +64,24 @@ public class DynamoDbItemService {
             }
 
         } catch (DynamoDbException e) {
-            e.printStackTrace();
+            throw new RuntimeException("Exception occurred while fetching all movies : " + e.getMessage());
         }
     }
 
+    public void updateMovie(DynamoDbClient dynamoDbClient, String tableName, Movie movie) {
+    }
+
+    public Movie getMovieById(DynamoDbClient dynamoDbClient, String tableName) {
+
+        Map<String, AttributeValue> keyName = new HashMap<>();
+        keyName.put("filmId", AttributeValue.builder().s("film").build());
+        keyName.put("title", AttributeValue.builder().s("").build());
+
+        GetItemRequest getItemRequest = GetItemRequest.builder()
+                .tableName(tableName)
+                .key(keyName)
+                .build();
+        GetItemResponse item = dynamoDbClient.getItem(getItemRequest);
+        return null;
+    }
 }

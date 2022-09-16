@@ -14,7 +14,7 @@ import java.util.List;
 @Component
 public class DynamoDbTableService {
 
-    public String createDDTable(DynamoDbClient ddb, String tableName, String partitionKey) {
+    public String createDDTable(DynamoDbClient ddb, String tableName, String partitionKey, String localSecondaryIndex) {
 
         CreateTableRequest request = CreateTableRequest.builder()
                 .attributeDefinitions(AttributeDefinition.builder()
@@ -30,12 +30,20 @@ public class DynamoDbTableService {
                         .writeCapacityUnits(2L)
                         .build())
                 .tableName(tableName)
+                .localSecondaryIndexes(LocalSecondaryIndex.builder()
+                        .indexName(localSecondaryIndex + "_Index")
+                        .keySchema(KeySchemaElement.builder()
+                                .attributeName(localSecondaryIndex)
+                                .keyType(KeyType.HASH)
+                                .build())
+                        .projection(Projection.builder().projectionType(ProjectionType.ALL).build())
+                        .build())
                 .build();
 
         return createTable(ddb, tableName, request);
     }
 
-    public String compositeKeyCreateDDTable(DynamoDbClient ddb, String tableName, String partitionKey, String sortKey) {
+    public String compositeKeyCreateDDTable(DynamoDbClient ddb, String tableName, String partitionKey, String sortKey, String localSecondaryIndex) {
         CreateTableRequest request = CreateTableRequest.builder()
                 .attributeDefinitions(AttributeDefinition.builder()
                                 .attributeName(partitionKey)
@@ -57,6 +65,14 @@ public class DynamoDbTableService {
                         .readCapacityUnits(2L)
                         .writeCapacityUnits(2L).build())
                 .tableName(tableName)
+                .localSecondaryIndexes(LocalSecondaryIndex.builder()
+                        .indexName(localSecondaryIndex + "_Index")
+                        .keySchema(KeySchemaElement.builder()
+                                .attributeName(localSecondaryIndex)
+                                .keyType(KeyType.HASH)
+                                .build())
+                        .projection(Projection.builder().projectionType(ProjectionType.ALL).build())
+                        .build())
                 .build();
 
         return createTable(ddb, tableName, request);

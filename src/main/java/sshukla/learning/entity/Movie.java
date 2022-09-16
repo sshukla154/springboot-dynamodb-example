@@ -2,7 +2,6 @@ package sshukla.learning.entity;
 
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbBean;
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbPartitionKey;
-import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbSecondaryPartitionKey;
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbSortKey;
 
 import java.util.List;
@@ -60,7 +59,6 @@ public class Movie {
         this.title = title;
     }
 
-    @DynamoDbSecondaryPartitionKey(indexNames = {"year-index"})
     public String getReleaseYear() {
         return releaseYear;
     }
