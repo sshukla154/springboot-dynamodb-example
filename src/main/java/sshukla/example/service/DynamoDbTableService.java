@@ -1,4 +1,4 @@
-package sshukla.learning.service;
+package sshukla.example.service;
 
 import org.springframework.stereotype.Component;
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
@@ -30,14 +30,14 @@ public class DynamoDbTableService {
                         .writeCapacityUnits(2L)
                         .build())
                 .tableName(tableName)
-                .localSecondaryIndexes(LocalSecondaryIndex.builder()
-                        .indexName(localSecondaryIndex + "_Index")
-                        .keySchema(KeySchemaElement.builder()
-                                .attributeName(localSecondaryIndex)
-                                .keyType(KeyType.HASH)
-                                .build())
-                        .projection(Projection.builder().projectionType(ProjectionType.ALL).build())
-                        .build())
+//                .localSecondaryIndexes(LocalSecondaryIndex.builder()
+//                        .indexName(localSecondaryIndex + "_Index")
+//                        .keySchema(KeySchemaElement.builder()
+//                                .attributeName(localSecondaryIndex)
+//                                .keyType(KeyType.HASH)
+//                                .build())
+//                        .projection(Projection.builder().projectionType(ProjectionType.ALL).build())
+//                        .build())
                 .build();
 
         return createTable(ddb, tableName, request);
@@ -65,14 +65,14 @@ public class DynamoDbTableService {
                         .readCapacityUnits(2L)
                         .writeCapacityUnits(2L).build())
                 .tableName(tableName)
-                .localSecondaryIndexes(LocalSecondaryIndex.builder()
-                        .indexName(localSecondaryIndex + "_Index")
-                        .keySchema(KeySchemaElement.builder()
-                                .attributeName(localSecondaryIndex)
-                                .keyType(KeyType.HASH)
-                                .build())
-                        .projection(Projection.builder().projectionType(ProjectionType.ALL).build())
-                        .build())
+//                .localSecondaryIndexes(LocalSecondaryIndex.builder()
+//                        .indexName(localSecondaryIndex + "_Index")
+//                        .keySchema(KeySchemaElement.builder()
+//                                .attributeName(localSecondaryIndex)
+//                                .keyType(KeyType.HASH)
+//                                .build())
+//                        .projection(Projection.builder().projectionType(ProjectionType.ALL).build())
+//                        .build())
                 .build();
 
         return createTable(ddb, tableName, request);

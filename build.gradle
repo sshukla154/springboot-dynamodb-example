@@ -4,7 +4,7 @@ plugins {
     id 'java'
 }
 
-group 'sshukla.learning'
+group 'sshukla.example'
 version '1.0-SNAPSHOT'
 sourceCompatibility = 17
 
@@ -35,8 +35,8 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok:1.18.24'
 
     //AWS SDK
-    implementation 'software.amazon.awssdk:bom:2.17.267'
-    implementation 'software.amazon.awssdk:dynamodb-enhanced:2.17.267'
+    implementation 'software.amazon.awssdk:bom:2.17.271'
+    implementation 'software.amazon.awssdk:dynamodb-enhanced:2.17.271'
 
 }
 

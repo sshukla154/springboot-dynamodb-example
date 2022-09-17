@@ -1,4 +1,4 @@
-package sshukla.learning.config;
+package sshukla.example.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;

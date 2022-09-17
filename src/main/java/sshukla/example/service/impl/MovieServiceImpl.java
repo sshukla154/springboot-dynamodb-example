@@ -1,14 +1,14 @@
-package sshukla.learning.service.impl;
+package sshukla.example.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
-import sshukla.learning.config.AWSServiceConfig;
-import sshukla.learning.entity.Movie;
-import sshukla.learning.service.DynamoDbItemService;
-import sshukla.learning.service.DynamoDbTableService;
-import sshukla.learning.service.MovieService;
+import sshukla.example.config.AWSServiceConfig;
+import sshukla.example.entity.Movie;
+import sshukla.example.service.DynamoDbItemService;
+import sshukla.example.service.DynamoDbTableService;
+import sshukla.example.service.MovieService;
 
 import java.util.List;
 

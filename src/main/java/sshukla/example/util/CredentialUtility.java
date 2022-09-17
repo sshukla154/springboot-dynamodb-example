@@ -1,4 +1,4 @@
-package sshukla.learning.util;
+package sshukla.example.util;
 
 import software.amazon.awssdk.auth.credentials.AwsCredentials;
 import software.amazon.awssdk.auth.credentials.AwsCredentialsProvider;
@@ -8,11 +8,11 @@ import software.amazon.awssdk.auth.credentials.AwsCredentialsProvider;
  */
 public class CredentialUtility {
 
-    //TODO: UPDATE THE BELOW VARIABLES VALUE WITH CORRECT AWS CREDENTAILS
+    //TODO: UPDATE THE BELOW VARIABLES VALUE WITH CORRECT AWS CREDENTIALS
     public static final String AWS_ACCESS_KEY = "";
     public static final String AWS_SECRET_KEY = "";
 
-    public static AwsCredentialsProvider getCredentails(){
+    public static AwsCredentialsProvider getCredentials(){
         AwsCredentialsProvider awsCredentialsProvider = () -> new AwsCredentials() {
             @Override
             public String accessKeyId() {

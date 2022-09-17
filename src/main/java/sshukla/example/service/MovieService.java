@@ -1,6 +1,6 @@
-package sshukla.learning.service;
+package sshukla.example.service;
 
-import sshukla.learning.entity.Movie;
+import sshukla.example.entity.Movie;
 
 import java.util.List;
 

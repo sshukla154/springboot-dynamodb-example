@@ -1,10 +1,10 @@
-package sshukla.learning.service;
+package sshukla.example.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 import software.amazon.awssdk.services.dynamodb.model.*;
-import sshukla.learning.entity.Movie;
+import sshukla.example.entity.Movie;
 
 import java.util.HashMap;
 import java.util.Map;
