@@ -2,7 +2,7 @@ package sshukla.example.service;
 
 import sshukla.example.entity.Movie;
 
-import java.util.List;
+import java.util.Set;
 
 /**
  * @author 'Seemant Shukla' on '09/09/2022'
@@ -16,7 +16,7 @@ public interface MovieService {
 
     void updateMovie(String tableName, Movie movie);
 
-    List<Movie> getAllMovies(String tableName);
+    Set<Movie> getAllMovies(String tableName);
 
     Movie getMovieById(String tableName, String filmId, String title);
 

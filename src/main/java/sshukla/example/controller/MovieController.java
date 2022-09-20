@@ -9,6 +9,7 @@ import sshukla.example.entity.Movie;
 import sshukla.example.service.impl.MovieServiceImpl;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author 'Seemant Shukla' on '08/09/2022'
@@ -26,7 +27,7 @@ public class MovieController {
         this.movieServiceImpl = movieServiceImpl;
     }
 
-    @PostMapping("/table/")
+    @PostMapping("/table")
     public ResponseEntity<String> createMovieTable(@RequestParam String tableName, @RequestParam String partitionKey,
                                                    @RequestParam(required = false) String sortKey,
                                                    @RequestParam(required = false) String globalSecondaryIndex,
@@ -35,36 +36,36 @@ public class MovieController {
         return new ResponseEntity<>("Table " + createdTable + ", is created", HttpStatus.CREATED);
     }
 
-    @GetMapping("/table/all/")
+    @GetMapping("/table/all")
     public ResponseEntity<List<String>> getAllTables() {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @DeleteMapping("/table/{tableName}/")
+    @DeleteMapping("/table/{tableName}")
     public ResponseEntity<String> deleteTable(@PathVariable String tableName) {
         movieServiceImpl.deleteTable(tableName);
         return new ResponseEntity<>("Table " + tableName + ", is deleted", HttpStatus.OK);
     }
 
-    @PostMapping("/movie/")
+    @PostMapping("/movie")
     public ResponseEntity<String> createMovie(@RequestParam String tableName, @RequestBody Movie movie) {
         movieServiceImpl.createMovie(tableName, movie);
         return new ResponseEntity<>("Movie " + movie.getTitle() + ", is created", HttpStatus.CREATED);
     }
 
-    @PutMapping("/movie/update/")
+    @PutMapping("/movie/update")
     public ResponseEntity<String> updateMovie(@RequestParam String tableName, @RequestBody Movie movie) {
         movieServiceImpl.updateMovie(tableName, movie);
         return new ResponseEntity<>("Movie " + movie.getTitle() + ", is updated", HttpStatus.OK);
     }
 
-    @GetMapping("/movie/all/")
-    public ResponseEntity<List<Movie>> getAllMovies(@RequestParam String tableName) {
-        List<Movie> movies = movieServiceImpl.getAllMovies(tableName);
+    @GetMapping("/movie/all")
+    public ResponseEntity<Set<Movie>> getAllMovies(@RequestParam String tableName) {
+        Set<Movie> movies = movieServiceImpl.getAllMovies(tableName);
         return new ResponseEntity<>(movies, HttpStatus.OK);
     }
 
-    @PutMapping("/movie/")
+    @GetMapping("/movie")
     public ResponseEntity<Movie> getMovie(@RequestParam String tableName, @RequestParam String filmId, @RequestParam String title) {
         Movie movie = movieServiceImpl.getMovieById(tableName, filmId, title);
         return new ResponseEntity<>(movie, HttpStatus.OK);

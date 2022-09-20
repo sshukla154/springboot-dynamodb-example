@@ -2,13 +2,16 @@ package sshukla.example.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import software.amazon.awssdk.enhanced.dynamodb.DynamoDbEnhancedClient;
+import software.amazon.awssdk.enhanced.dynamodb.DynamoDbTable;
+import software.amazon.awssdk.enhanced.dynamodb.Key;
+import software.amazon.awssdk.enhanced.dynamodb.TableSchema;
+import software.amazon.awssdk.enhanced.dynamodb.model.GetItemEnhancedRequest;
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 import software.amazon.awssdk.services.dynamodb.model.*;
 import sshukla.example.entity.Movie;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author 'Seemant Shukla' on '08/09/2022'
@@ -37,7 +40,7 @@ public class DynamoDbItemService {
 
         try {
             PutItemResponse putItemResponse = ddb.putItem(PutItemRequest.builder().tableName(tableName).item(itemMap).build());
-            log.info("{} was successfully created. The request id is {}" + tableName + putItemResponse.responseMetadata().requestId());
+            log.info("{} was successfully created. The request id is {}", tableName, putItemResponse.responseMetadata().requestId());
         } catch (ResourceNotFoundException e) {
             log.error("Error: The Amazon DynamoDB table \" " + tableName + " can't be found.\n");
             throw new RuntimeException("Be sure that it exists and that you've typed its name correctly!");
@@ -68,20 +71,51 @@ public class DynamoDbItemService {
         }
     }
 
+    public Set<Movie> scanItemsByEnhancedClient(DynamoDbEnhancedClient enhancedClient, String tableName) {
+        Set<Movie> movieSet = new HashSet<>();
+        try {
+            // Create a DynamoDbTable object
+            DynamoDbTable<Movie> moviesTable = enhancedClient.table(tableName, TableSchema.fromBean(Movie.class));
+            Iterator<Movie> results = moviesTable.scan().items().iterator();
+
+            while (results.hasNext()) {
+                Movie rec = results.next();
+                movieSet.add(rec);
+            }
+
+        } catch (DynamoDbException e) {
+            System.err.println(e.getMessage());
+        }
+        return movieSet;
+    }
+
     public void updateMovie(DynamoDbClient dynamoDbClient, String tableName, Movie movie) {
     }
 
-    public Movie getMovieById(DynamoDbClient dynamoDbClient, String tableName) {
+    public Movie getMovieById(DynamoDbClient dynamoDbClient, String tableName, String filmId, String title) {
 
         Map<String, AttributeValue> keyName = new HashMap<>();
-        keyName.put("filmId", AttributeValue.builder().s("film").build());
-        keyName.put("title", AttributeValue.builder().s("").build());
+        keyName.put("filmId", AttributeValue.builder().s(filmId).build());
+        keyName.put("title", AttributeValue.builder().s(title).build());
 
         GetItemRequest getItemRequest = GetItemRequest.builder()
                 .tableName(tableName)
                 .key(keyName)
                 .build();
-        GetItemResponse item = dynamoDbClient.getItem(getItemRequest);
-        return null;
+        GetItemResponse getItemResponse = dynamoDbClient.getItem(getItemRequest);
+        Map<String, AttributeValue> hello = getItemResponse.item();
+
+        for (String item : hello.keySet()) {
+            String value = hello.get(item).s();
+            System.out.println(item + " : " + value);
+
+        }
+
+        return new Movie();
+    }
+
+    public Movie getMovieByIdByEnhancedClient(DynamoDbEnhancedClient enhancedClient, String tableName, String filmId, String title) {
+        DynamoDbTable<Movie> moviesTable = enhancedClient.table(tableName, TableSchema.fromBean(Movie.class));
+        return moviesTable.getItem(GetItemEnhancedRequest.builder().key(Key.builder().partitionValue(filmId).sortValue(title).build()).build());
     }
 }

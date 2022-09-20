@@ -3,6 +3,7 @@ package sshukla.example.service.impl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import software.amazon.awssdk.enhanced.dynamodb.DynamoDbEnhancedClient;
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 import sshukla.example.config.AWSServiceConfig;
 import sshukla.example.entity.Movie;
@@ -10,7 +11,7 @@ import sshukla.example.service.DynamoDbItemService;
 import sshukla.example.service.DynamoDbTableService;
 import sshukla.example.service.MovieService;
 
-import java.util.List;
+import java.util.Set;
 
 /**
  * @author 'Seemant Shukla' on '08/09/2022'
@@ -71,16 +72,17 @@ public class MovieServiceImpl implements MovieService {
     }
 
     @Override
-    public List<Movie> getAllMovies(String tableName) {
-        DynamoDbClient dynamoDbClient = awsServiceConfig.amazonDynamoDB();
-        dynamoDbItemService.scanItems(dynamoDbClient, tableName);
-        return null;
+    public Set<Movie> getAllMovies(String tableName) {
+        DynamoDbEnhancedClient dynamoDbEnhancedClient = awsServiceConfig.dynamoDbEnhancedClient();
+        return dynamoDbItemService.scanItemsByEnhancedClient(dynamoDbEnhancedClient, tableName);
     }
 
     @Override
     public Movie getMovieById(String tableName, String filmId, String title) {
-        DynamoDbClient dynamoDbClient = awsServiceConfig.amazonDynamoDB();
-        dynamoDbItemService.getMovieById(dynamoDbClient, tableName);
-        return null;
+//        DynamoDbClient dynamoDbClient = awsServiceConfig.amazonDynamoDB();
+//        return dynamoDbItemService.getMovieById(dynamoDbClient, tableName, filmId, title);
+
+        DynamoDbEnhancedClient dynamoDbEnhancedClient = awsServiceConfig.dynamoDbEnhancedClient();
+        return dynamoDbItemService.getMovieByIdByEnhancedClient(dynamoDbEnhancedClient, tableName, filmId, title);
     }
 }
